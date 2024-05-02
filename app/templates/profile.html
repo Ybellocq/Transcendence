@@ -1,0 +1,104 @@
+{% extends 'base/navbar.html' %}
+{% load static %}
+{%block content%}
+    <body class="w-100">
+        <div class="mx-5 mt-3">
+            <h4 class="text-white">PINGPONG</h4>
+            <div class="information-container p-3 mt-2 text-white">
+                <p class="fw-bold fs-4 mb-2">📈 Votre Profil !</p>
+                <p class="fw-medium fs-6">Vous êtes actuellement sur la page de profil. Ici, vous pouvez voir vos informations personnelles, vos statistiques de jeu et bien plus encore !</p>
+            </div>
+            <div class="row mt-5 text-left fs-5 fw-medium">
+                <div class="col-12 col-md-4">
+                    <div class="info-box mb-5">
+                        <div class="mb-3">
+                            <p for="username" class="form-label text-white fw-bold fs-4">Nombre de matchs</p>
+                            <p class="form-label text-secondary fw-lighter fs-6">Nombre de matchs joués</p>
+                            <div class="mb-2">
+                                <p class="text-white fs-3 fw-bold">{{ total_matches }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="info-box mb-5">
+                        <div class="mb-3">
+                            <p for="username" class="form-label text-white fw-bold fs-4">Nombre de victoires</p>
+                            <p class="form-label text-secondary fw-lighter fs-6">Nombre de matchs gagnés</p>
+                            <div class="mb-2">
+                                <p class="text-white fs-3 fw-bold">{{ win }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="info-box mb-5">
+                        <div class="mb-3">
+                            <p for="username" class="form-label text-white fw-bold fs-4">Nombre de défaite</p>
+                            <p class="form-label text-secondary fw-lighter fs-6">Nombre de matchs perdu</p>
+                            <div class="mb-2">
+                                <p class="text-white fs-3 fw-bold">{{ lose }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                {% if data.win_matches > 0 or data.lose_matches > 0 %}
+                    <!-- Match history -->
+                    <div class="col-12 col-md-15">
+                        <div class="info-box mb-5">
+                            <div class="mb-3">
+                                <p for="username" class="form-label text-white fw-bold fs-4">Historique des matchs</p>
+                                <p class="form-label text-secondary fw-lighter fs-6">Liste des matchs joués</p>
+                                <div class="mb-2">
+                                    <ul class="text-white fs-5 fw-lighter">
+                                        {% for match_with_date in data.matches_with_date %}
+                                            <li>
+                                                {{ match_with_date.1|date:"d/m H:i" }} | 
+                                                {% if forloop.counter <= data.win_matches %}
+                                                    <span class="text-success">Match <span class="fw-bold">gagné</span></span>
+                                                {% else %}
+                                                    <span class="text-danger">Match <span class="fw-bold">perdu</span></span>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>              
+                    <!-- Chart -->
+                    <div class="col col-md-2 py-1">
+                        <div class="info-box mb-5">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <script>
+            var colors = ['#007bff','#333333'];
+            var chartsOptions = {
+                cutoutPercentage: 85, 
+                legend: {position:'bottom', padding:5, labels: {pointStyle:'circle', usePointStyle:true}}
+            };
+            var chDonutData = {
+                labels: ['Victoires', 'Défaites'],
+                datasets: [
+                    {
+                        backgroundColor: colors.slice(0, 1),
+                        borderWidth: 0,
+                        data: [{{ data.win_matches }}, {{ data.lose_matches }}]
+                    }
+                ]
+            };
+            var chDonut = document.getElementById("myChart");
+            if (chDonut) {
+                new Chart(chDonut, {
+                    type: 'pie',
+                    data: chDonutData,
+                    options: chartsOptions
+                });
+            }
+        </script>
+    </body>
+{%endblock content%}  

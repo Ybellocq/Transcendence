@@ -1,0 +1,137 @@
+services:
+# Grafana for monitoring and visualization of data
+  grafana:
+    image: grafana/grafana:latest
+    user: "0"
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+    volumes:
+      - ./configuration/grafana:/var/lib/grafana
+    networks:
+      - monitoring
+# Django framework for backend development
+  django:
+    build: ./app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./app/:/usr/src/app/
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+
+    networks:
+      - monitoring
+# Postgres database for storing data
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+       - ./.env.dev
+    ports:
+      - 5433:5433
+    networks:
+      - monitoring
+# Nginx for serving static files
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./configuration/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./app/static/:/usr/share/nginx/html/static/
+      - ./app/media/:/usr/share/nginx/html/media/
+    ports:
+      - 1024:1024
+    depends_on:
+      - django
+    networks:
+      - monitoring
+# Prometheus for monitoring and alerting
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9099:9099
+    volumes:
+      - ./configuration/prometheus:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - monitoring
+# Node exporter for monitoring system metrics
+  elasticsearch:
+    image: bitnami/elasticsearch:latest
+    environment:
+      - ELASTICSEARCH_HEAP_SIZE=1024m
+      - discovery.type=single-node
+    volumes:
+      - elasticsearch_data:/bitnami/elasticsearch/data
+    ports:
+      - 9210:9210
+    networks:
+      - monitoring
+  logstash:
+    image: bitnami/logstash:latest
+    environment:
+      - LOGSTASH_ELASTICSEARCH_URL=elasticsearch
+      - LOGSTASH_ELASTICSEARCH_PORT_NUMBER=9200
+    volumes:
+      - ./configuration/logstash/logstash.conf:/opt/bitnami/logstash/pipeline/logstash.conf
+      - logstash_data:/bitnami
+    ports:
+      - 5100:5100
+    depends_on:
+      - elasticsearch
+    networks:
+      - monitoring
+  kibana:
+    image: bitnami/kibana:latest
+    environment:
+      - KIBANA_ELASTICSEARCH_URL=elasticsearch
+      - KIBANA_ELASTICSEARCH_PORT_NUMBER=9200
+    volumes:
+      - kibana_data:/bitnami/kibana
+    ports:
+      - 7123:7123
+    depends_on:
+      - elasticsearch
+    networks:
+      - monitoring
+# Security monitoring
+  vault:
+    image: hashicorp/vault:latest
+    ports:
+      - 8200:8200
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ./configuration/vault/config.hcl:/vault/config/config.hcl
+      - vault_data:/vault/file
+    environment:
+      VAULT_ADDR: http://localhost:8200
+    entrypoint: vault server -config=/vault/config/config.hcl
+    networks:
+      - monitoring
+  modsecurity:
+    image: vshn/modsecurity:latest
+    ports:
+      - 12345:80
+    volumes:
+      - ./configuration/modsecurity/modsecurity.conf:/etc/modsecurity/modsecurity.conf:ro
+    networks:
+      - monitoring
+    
+# Volume for storing data
+volumes:
+  postgres_data:
+  elasticsearch_data:
+  logstash_data:
+  kibana_data:
+  vault_data:
+
+# Network for monitoring
+networks:
+  monitoring:

@@ -1,0 +1,343 @@
+/* ########################################## */
+/* friends.html */
+/* ########################################## */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.information-container {
+    border-radius: 7px;
+    background: #242222;
+}
+
+.w-10 {
+    width: 10%;
+}
+
+.bg-darkdark{
+    background-color: #1A1A1A;
+}
+
+/* ########################################## */
+/* game.html */
+/* ########################################## */
+
+body {
+    background-color: #1F1D1D;
+}
+
+div.container h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8vw;
+    font-weight: bolder;
+    color: #f8f8f8;
+    margin: -5px 100px 0px -300px;
+}
+
+canvas {
+    width: 50%;
+    border:2px solid #fff;
+    display: block;
+    margin: 5% auto;
+    background-color: #171515;
+}
+
+/* ########################################## */
+/* gamepage.html and ia.html*/
+/* ########################################## */
+
+.information-container {
+    border-radius: 7px;
+    background: #242222;
+}
+
+.w-95 {
+    width: 95%;
+}
+
+.container .bg-gamecard {
+    transition: all 0.3s;
+    background: #1A1A1A;
+    box-shadow: 0 1vh 1vh 0 rgba(0,0,0,0.25);
+
+}
+
+.container .bg-gamecard:hover {
+    transform: scale(1.02);
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.pb-10 {
+    padding-bottom: 100px;
+}
+
+.bg-darker {
+    background: #1A1A1A;
+}
+
+.custom-btn-width {
+    width: 95%;
+}
+
+.modal .btn.custom-btn {
+    background-color: #198754;
+    color: white;
+    border: none;   
+}
+
+.modal .btn.custom-btn:hover {
+    background-color: #086138;
+    color: white;
+}
+
+/* ########################################## */
+/* index.html ou appelez login.html plus tard*/
+/* ########################################## */
+
+body.login {
+    background-color: #1E1E1E !important;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.login-container {
+    width: 300px;
+    padding: 20px;
+    background-color: #3D3939;
+    border-radius: 7px;
+}
+
+.h-35 {
+    height: 30vh;
+}
+
+.w-20 {
+    width: 20%;
+}
+
+.custom-btn-width {
+    width: 95%;
+}
+
+.login-container .btn.custom-btn {
+    background-color: #2F2727;
+    color: white;
+    border: none;   
+}
+
+.login-container .btn.custom-btn:hover {
+    background-color: #252525;
+    color: white;
+}
+
+.login-container .placeholder-style::placeholder {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ########################################## */
+/* navbar.html */
+/* ########################################## */
+
+body .navbar-login{
+    width: 100%;
+    background: #1E1E1E !important;
+}
+
+.bg-custom {
+    background: #1A1A1A;
+    color: white;
+}
+
+.nav-link {
+    color: white !important;
+    font-size: 2vh;
+    margin-right: 2vh;
+    transition: all 0.3s;
+}
+
+.nav-link:hover {
+    color: grey !important;
+    transition: all 0.3s;
+}
+
+.nav-link.active {
+    font-weight: bolder;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.nav-item.active .navbar-brand {
+    font-weight: bold;
+}
+
+.nav-item .navbar-brand {
+    font-weight: normal;
+}
+
+.dropdown-menu {
+    background: #121212 !important;
+    color: white !important;
+}
+
+.nav-item .active {
+    font-weight: bold !important;
+}
+
+/* ########################################## */
+/* profile.html */
+/* ########################################## */
+
+.info-box {
+    background-color: #1C1B1B;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 1vh 1vh 0 rgba(0,0,0,0.25);
+}
+
+.card {
+    background-color: #1C1B1B;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 1vh 1vh 0 rgba(0,0,0,0.25);
+}
+
+/* ########################################## */
+/* register.html */
+/* ########################################## */
+
+.register-container {
+    padding: 30px;
+    background-color: #3D3939;
+    border-radius: 7px;
+    margin-left: 5vh;
+    margin-right: 5vh;
+}
+
+.h-35 {
+    height: 30vh;
+}
+
+.w-20 {
+    width: 20%;
+}
+
+.custom-btn-width-register {
+    width: 100%;
+}
+
+.register-container .btn.custom-btn {
+    background-color: #2F2727;
+    color: white;
+    border: none;   
+}
+
+.register-container .btn.custom-btn:hover {
+    background-color: #252525;
+    color: white;
+}
+
+.register-container .placeholder-style::placeholder {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ########################################## */
+/* settings.html */
+/* ########################################## */
+
+.param-box {
+    background-color: #1C1B1B;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 1vh 1vh 0 rgba(0,0,0,0.25);
+}
+
+.btn.custom-btn {
+    background-color: #286B3B;
+    color: white;
+    border: none;   
+}
+
+.btn.custom-btn:hover {
+    background-color: #1e572e;
+    color: white;
+}
+
+.btn.custom-btn-width {
+    width: 100%;
+}
+
+.custom-file input[type=file] {
+    visibility: hidden;
+    width: 100%;
+    cursor: pointer;
+}
+
+
+.custom-file-label {
+    width: 100%;
+    height: 70%;
+    padding: 7px;
+    background-color: rgba(198, 182, 182, 0.1);
+    border-radius: 7px;
+}
+
+/* ########################################## */
+/* tournaments_overview.html */
+/* ########################################## */
+
+.rounds-container {
+    border-radius: 7px;
+    background: #242222;
+}
+.players-container {
+    border-radius: 7px;
+    background: #242222;
+}
+
+/* ########################################## */
+/* tournaments.html */
+/* ########################################## */
+
+.tournaments-container .btn-custom {
+    background: #165829;
+    color: white;
+    border: none;
+}
+
+.tournaments-container .btn-custom:hover {
+    background: #0e3a1b;
+    color: white;
+}
+
+/* ########################################## */
+/* navbar.html */
+/* ########################################## */
+
+.btn-custom-w {
+    width: 100%;
+}
+
+.custom-btn {
+    background-color: #198754;
+    color: white;
+    border: none;
+}
+
+.custom-btn:hover {
+    background-color: #086138;
+    color: white;
+}

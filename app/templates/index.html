@@ -1,0 +1,28 @@
+{% extends 'base/navbar.html' %}
+{%block navbar%}
+{%endblock navbar%}
+{% load static %}
+{%block content%}
+    <body class="login">
+        <div class="login-container mx-5">
+            <h1 class="text-white fs-2 fw-bold mb-4 text-center">PINGPONG</h1>
+
+            <form method="POST" onsubmit="return validateForm()">
+                {% csrf_token %}
+                <div class="mb-4">
+                    {{ form.usernames.label_tag }}
+                    {{ form.usernames }}
+                </div>
+                <div class="mb-4">
+                    {{ password_form.label_tag }}
+                    {{ password_form }}
+                </div>
+                <h6 class="text-center text-danger mb-3">{{ message }}</h6>
+                <button type="submit" class="btn btn-primary custom-btn custom-btn-width">Connexion</button>
+                <h6 class="text-center mt-3 text-white">Pas encore inscrit ? <a href="{% url 'register' %}" class="text-decoration-none">Ici</a></h6>
+            </form>
+        </div>
+    </body>
+{%endblock content%}
+
+

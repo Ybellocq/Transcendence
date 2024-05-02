@@ -1,0 +1,18 @@
+{%extends 'base/navbar.html'%}
+{% load static %}
+{%block content%}
+    <div class="mx-5 mt-3">
+        <h4 class="title text-white">PINGPONG</h4>
+    </div>
+    <div class="mx-5 text-center">
+        <div class="game-container embed-responsive embed-responsive-16by9">
+            <canvas id="pongIaCanvas" class="embed-responsive-item" width="800" height="400"></canvas>
+        </div>
+    </div>
+    <div class="text-center">
+        <h4 class="title text-white">SCORE</h4>
+        <div class="score">
+            <span id="player1-score" class="text-white fw-bold">0</span> <span class="text-white">-</span> <span id="player2-score" class="text-white fw-bold">0</span>
+        </div>
+    </div>
+{%endblock content%}

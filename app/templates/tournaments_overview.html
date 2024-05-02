@@ -1,0 +1,35 @@
+{% extends 'base/navbar.html' %}
+{% load static %}
+
+
+{%block content%}
+    <body class="w-100">
+
+        <div class="mx-5 mt-3">
+        <h4 class="text-white">PINGPONG</h4>
+
+        {% for tournament in tournaments %}
+        <div class="information-container p-3 mt-2 text-white">
+            <p class="fw-bold fs-4 mb-2">Tournois de <span class="fw-bold">{{ tournament.owner_name }}</span></p>
+            <p class="fw-medium fs-6">Ici vous pouvez rejoindre un tournoi déjà existant ou en créer un vous-même ! Vous pouvez inviter vos amis à des tournois privés ou les ouvrir au public.</p>
+        </div>
+        <div class="players-container col-md-2" id="players">
+            {% for username in tournament.username_virtual_player %}
+            <div class="information-container p-3 mt-3 text-white">
+                <p class="fw-bold fs-5 mbt-1 ">{{ username }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="rounds-container col-md-8" id="rounds">
+            
+        </div>
+
+        {% endfor %}
+    </body>
+
+    <script>
+        const TournamentUrl = "{% url 'tournaments_overview' %}";
+    </script>
+    <script src="{% static 'js/tournaments_overview.js' %}"></script>
+
+{%endblock content%}

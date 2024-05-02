@@ -1,0 +1,30 @@
+{% extends 'base/navbar.html' %}
+{% load static %}
+{%block content%}  
+    <body class="w-100">
+        <div class="mx-5 mt-3">
+        <h4 class="text-white">PINGPONG</h4>
+        <div class="information-container p-3 mt-2 text-white">
+            <p class="fw-bold fs-4 mb-2">🌍 Mes Amis !</p>
+            <p class="fw-medium fs-6">Vous, êtes actuellement sur la page d’amis, ici vous pouvez voir la liste de vos amis, les ajouter, les supprimer et bien plus encore !</p>
+        </div>
+            <div class="friends-container mt-3">
+                <div class="friends-list">
+                    <div class="friends-list-header">
+                        <p class="fw-bold fs mb-0 text-white text-center">Ajouter un ami</p>
+                        <div class="col-12 d-flex justify-content-center mt-2">
+                            <input type="text" id="search" class="form-control w-10 bg-dark text-white" placeholder="Rechercher un ami">
+                        </div>
+                        <div class="row mt-3" id="users"></div>
+                    </div>
+                </div>
+            </div>
+    </body>
+    <script>
+        const searchUrl = "{% url 'search_friends' %}";
+        const addFriendUrl = "{% url 'add_friends' %}";
+        const csrfToken = "{{ csrf_token }}";
+    </script>
+    <script src="{% static 'js/searchFriends.js' %}"></script>
+    <script src="{% static 'js/addFriends.js' %}"></script>
+{%endblock content%}

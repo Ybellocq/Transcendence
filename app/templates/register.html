@@ -1,0 +1,31 @@
+{% extends 'base/navbar.html' %}
+{%block navbar%}
+{%endblock navbar%}
+{% load static %}
+{%block content%}
+    <div class="mx-10 register-container">
+        <h1 class="text-white fs-2 fw-bold mb-4 text-center">Création de compte</h1>
+        <form method="POST" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <div class="mb-2">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+            </div>
+            <div class="mb-2">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+            </div>
+            <div class="mb-2">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+            </div>
+            {{form.non_field_errors}}
+            {% for field in form %}
+                <h6 class="text-center text-danger mb-3 fw-normal">{{ field.errors }}</h6>
+            {% endfor %}
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary custom-btn custom-btn-width-register">Créer un compte</button>
+    </div>
+{%endblock content%}
+
+

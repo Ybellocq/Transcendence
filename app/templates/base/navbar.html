@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <!--<script type="text/javascript" src="jscript/graph.js"></script>-->
+    <title> Transcendence</title>
+    <script src="{% static 'js/route.js' %}"></script>
+    <script src="{% static 'js/ia.js' %}"></script>
+    <script src="{% static 'js/pong.js' %}"> </script>
+    <script src="{% static 'js/launchGame.js' %}"></script>
+</head>
+<body style="background-color: #1F1D1D;">
+<nav class="navbar navbar-expand-lg bg-custom">
+  <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                  <a class="redir nav-link {% if request.path == '/welcome/' %}active{% endif %}" aria-current="page" href="{% url 'welcome' %}">Accueil</a>
+              </li>
+              <li class="nav-item">
+                  <a class="redir nav-link {% if request.path == '/gamepage/' %}active{% endif %}" href="{% url 'gamepage' %}">Jeu</a>
+              </li>
+              <li class="nav-item">
+                  <a class="redir nav-link {% if request.path == '/tournaments/' %}active{% endif %}" href="{% url 'tournaments' %}">Tournois</a>
+              </li>
+              <li class="nav-item">
+                <a class="redir nav-link {% if request.path == '/profile/' %}active{% endif %}"href="{% url 'profile' %}">Profil</a>
+            </li>
+          </ul>
+          <!-- Profil Dropdown -->
+          <div class="dropdown">
+              <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img src="{{ request.user.profile_image.url }}" alt="mdo" width="32" height="32" class="rounded-circle">
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
+                  <li><a class="redir dropdown-item text-center text-white" href="{% url 'settings' %}">Paramètres de profil</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="redir dropdown-item text-center text-white" href="{% url 'friends' %}">Amis</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="redir dropdown-item text-center text-white" href="{% url 'logout' %}">Se déconnecter</a></li>
+              </ul>
+          </div>
+      </div>
+  </div>
+</nav>
+<main class="w-100">
+    {% block content %}
+	{% endblock %}
+</main>
+</body>
+<script>
+    const level = '{{ level }}';
+    const username = "{{ user.get_username }}";
+    const userId = "{{ user.id }}";
+    const gameUrl = "{% url 'game' %}";
+    const gameiaUrl = "{% url 'gameia' %}";
+    const gamepageUrl = "{% url 'gamepage' %}";
+    const csrfToken = "{{ csrf_token }}";
+    const updateScoreUrl = "{% url 'update_score' %}";
+    const updateLoseUrl = "{% url 'update_loss' %}";
+</script>
+</html>
