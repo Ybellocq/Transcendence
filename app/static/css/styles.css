@@ -98,17 +98,6 @@ canvas {
 /* index.html ou appelez login.html plus tard*/
 /* ########################################## */
 
-body.login {
-    background-color: #1E1E1E !important;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 .login-container {
     width: 300px;
     padding: 20px;
@@ -340,4 +329,9 @@ body .navbar-login{
 .custom-btn:hover {
     background-color: #086138;
     color: white;
+}
+
+.dropdown-item .active {
+    font-weight: bold !important;
+    background-color: red;
 }

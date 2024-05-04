@@ -53,6 +53,14 @@ function attachEventListeners() {
             link.setAttribute('data-click-event-attached', true);
         }
     });
+
+    // Hide navbar on index page and register page
+    const navbar = document.querySelector('.navbar');
+    if (location.pathname == '/' || location.pathname == '/register/' || location.pathname == '/logout/') {
+        navbar.style.display = 'none';
+    } else {
+        navbar.style.display = 'block';
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
