@@ -26,6 +26,11 @@ function loadView(url, needHistory) {
             else if (url == '/gamepage/') {
                 setupLaunch();
             }
+            else if (url == '/friends/') {
+                setupAddFriends();
+                setupFriends();
+            }
+
             // Attachement des écouteurs d'événements spécifiques à la vue chargée
             attachEventListeners();
             // Optionnel : Mise en place des actions spécifiques en fonction de l'URL chargée
@@ -76,6 +81,10 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     else if (url == '/gamepage/') {
         setupLaunch();
+    }
+    else if (url == '/friends/') {
+        setupAddFriends();
+        setupFriends();
     }
 	window.addEventListener('popstate', function(event) {
 		let url = location.pathname;

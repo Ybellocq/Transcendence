@@ -14,8 +14,11 @@
     <script type="text/javascript" src="jscript/graph.js"></script>
     <script src="{% static 'js/route.js' %}"></script>
     <script src="{% static 'js/ia.js' %}"></script>
+    <script src="{% static 'js/searchFriends.js' %}"></script>
+    <script src="{% static 'js/addFriends.js' %}"></script>
     <script src="{% static 'js/pong.js' %}"> </script>
     <script src="{% static 'js/launchGame.js' %}"></script>
+    
     <title> Transcendence</title>
 </head>
 <body style="background-color: #1F1D1D;">
@@ -71,6 +74,7 @@
     const csrfToken = "{{ csrf_token }}";
     const updateScoreUrl = "{% url 'update_score' %}";
     const updateLoseUrl = "{% url 'update_loss' %}";
-    
+    const searchUrl = "{% url 'search_friends' %}";
+    const addFriendUrl = "{% url 'add_friends' %}";
 </script>
 </html>

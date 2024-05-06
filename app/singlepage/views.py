@@ -61,7 +61,7 @@ def register(request):
         if form.is_valid(): 
             user = form.save()
             login(request, user)
-            return render(request, 'welcome.html')
+            return redirect('/welcome/')
         else:
             message = 'Votre formulaire contient des erreurs'
             return render(request, 'register.html', {'form': form, 'message': message})
