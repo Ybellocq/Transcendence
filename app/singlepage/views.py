@@ -280,7 +280,7 @@ def tournament_match(request):
         return JsonResponse({'success': True})
     else:
         tournaments_overview = Tournament.objects.filter(owner_uid_id=request.user.id).last()
-        match = Tournament_Match.objects.filter(tournament_id=tournaments_overview.id).first()
+        match = Tournament_Match.objects.filter(tournament_id=tournaments_overview.id, winner='...').first()
         data =  {
             'player1': match.player1,
             'player2': match.player2,
