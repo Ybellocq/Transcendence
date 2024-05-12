@@ -324,16 +324,22 @@ function setupTournament() {
 
     function endGame() {
         if (player1Score === 5) {
-            fetch(update_url, {
+            fetch(update_tournament_match)
+            .then(response => {
+                if (!response.ok) {
+                throw new Error('Erreur lors de la requête GET');
+                }
+                return response.json();
+            }).then(data => {
+            fetch(update_tournament_match, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': csrfToken,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    'winner': player1_name,
-                    'match_id': tournamentId,
-                    'tournament_id': tournament_id
+                    'winner': data.tournament_match.player1,
+                    'match_id': data.tournament_match.match_id,
                 })
             }).then(response => {
                 if (response.ok) {
@@ -348,18 +354,25 @@ function setupTournament() {
                 console.error('Error updating score:', error);
             });
 
-            drawText(player1_name + " wins !", 350, 250, 'white');
+            drawText(data.tournament_match.player1 + " wins !", 350, 250, 'white');
+        })
         } else {
-            fetch(update_url, {
+            fetch(update_tournament_match)
+            .then(response => {
+                if (!response.ok) {
+                throw new Error('Erreur lors de la requête GET');
+                }
+                return response.json();
+            }).then(data => {
+            fetch(update_tournament_match, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': csrfToken,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    'winner': player2_name,
-                    'match_id': tournamentId,
-                    'tournament_id': tournament_id
+                    'winner': data.tournament_match.player2,
+                    'match_id': data.tournament_match.match_id,
                 })
             }).then(response => {
                 if (response.ok) {
@@ -374,9 +387,9 @@ function setupTournament() {
                 console.error('Error updating score:', error);
             });
 
-            drawText(player2_name + " wins !", 350, 250, 'white');
-        }
-    }
+            drawText(data.tournament_match.player2 + " wins !", 350, 250, 'white');
+        })
+    }}
     // Boucle sur le jeu 
 
     function gameLoop() {

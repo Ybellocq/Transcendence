@@ -69,7 +69,7 @@
                 </div>
                 {% if tournaments.state is False %}
                 <div class="d-flex justify-content-center mt-3">
-                    <button class="btn btn btn-success btn-custom" onclick="LaunchMatch()">Lancer le prochain round</button>
+                    <a class="btn btn-success btn-custom" href="{% url 'tournament_match' %}">Lancer le prochain round</a>
                 </div>
                 {% else %}
                     <p class="text-white text-center mt-5">Le tournois est terminé</p>
@@ -78,68 +78,4 @@
             </div>
         {% endfor %}
     </body>
-    <script>
-        function LaunchMatch() {
-            // get the current match_id
-            var currentMatchId = parseInt(document.getElementById('currentMatchId').value);
-
-            // Get the tournament id
-            {% for tournaments in tournaments %}
-                var tournament_id = '{{ tournaments.id }}';
-            {% endfor %}
-
-            console.log("Match ID: " + currentMatchId);
-
-            // Check in a loop if all 
-            var matchEnded = false;
-            {% for id in matchs_list %}
-                if ({{ id.id }} == currentMatchId) {
-                    if ('{{ id.winner }}' != '...') {
-                        matchEnded = true;
-                    }
-                }
-            {% endfor %}
-
-            // Get all matches ended bego
-
-            console.log("Match ID", currentMatchId, "is ended ? " + matchEnded);
-
-            // If the match is ended, increment the currentMatchId
-            if (matchEnded) {
-                currentMatchId += 1;
-                document.getElementById('currentMatchId').value = currentMatchId;
-            }
-
-            // Get players of the current match
-            var player1 = '';
-            var player2 = '';
-            {% for id in matchs_list %}
-                if ({{ id.id }} == currentMatchId) {
-                    player1 = '{{ id.player1 }}';
-                    player2 = '{{ id.player2 }}';
-                }
-            {% endfor %}
-
-            // Send the request to the server
-            if (matchEnded == false) {
-                fetch(tournament_match, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: JSON.stringify({
-                        'player1': player1,
-                        'player2': player2,
-                        'match_id': currentMatchId,
-                        'tournament_id': tournament_id
-                    })
-                })
-                .then(response => response.json())
-                .then(response => {
-                    loadView(tournament_match);
-                });
-            }
-        }
-    </script>
 {%endblock content%}
