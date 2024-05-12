@@ -127,7 +127,26 @@ class Tournament(models.Model):
     username_virtual_player = ArrayField(models.CharField(max_length=100, blank=True), default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     state = models.BooleanField(default=False)
-    winner_uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tournament_winner', null=True)
+    winner_name = models.CharField(max_length=100, blank=True)
     number_of_players = models.IntegerField(default=0, blank=True)
+    number_of_matchs = models.IntegerField(default=0, blank=True)
     number_of_rounds = models.IntegerField(default=0, blank=True)
-    
+
+############################################################################################################
+# Tournament_match model
+# This model represents the match of a tournament table in the database
+# It has the following fields:
+# - tournament_id: a foreign key field that stores the tournament
+# - match_id: an integer field that stores the match number
+# - round_id: an integer field that stores in wich round is the match
+# - player1/player2: a char array field that stores the name of the players
+# - winner: a char array field that stores the winner name
+############################################################################################################
+
+class Tournament_Match(models.Model):
+    tournament_id = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='tournament')
+    match_id = models.IntegerField(default=0, blank=True)
+    round_id = models.IntegerField(default=0, blank=True)
+    player1 = models.CharField(max_length=100, blank=True)
+    player2 = models.CharField(max_length=100, blank=True)
+    winner = models.CharField(max_length=100, blank=True)

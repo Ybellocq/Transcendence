@@ -18,6 +18,7 @@
     <script src="{% static 'js/addFriends.js' %}"></script>
     <script src="{% static 'js/pong.js' %}"> </script>
     <script src="{% static 'js/launchGame.js' %}"></script>
+    <script src="{% static 'js/tournaments.js' %}"></script>
     
     <title> Transcendence</title>
 </head>
@@ -40,7 +41,7 @@
                   <a class="redir nav-link {% if request.path == '/tournaments/' %}active{% endif %}" href="{% url 'tournaments' %}">Tournois</a>
               </li>
               <li class="nav-item">
-                <a class="redir nav-link {% if request.path == '/profile/' %}active{% endif %}"href="{% url 'profile' %}">Profil</a>
+                <a class="redir nav-link {% if request.path == '/profile/' %}active{% endif %}" href="{% url 'profile' %}">Profil</a>
             </li>
           </ul>
           <!-- Profil Dropdown -->
@@ -76,5 +77,18 @@
     const updateLoseUrl = "{% url 'update_loss' %}";
     const searchUrl = "{% url 'search_friends' %}";
     const addFriendUrl = "{% url 'add_friends' %}";
+    const create_tournament = "{% url 'create_tournament' %}";
+    const tournament_match = "{% url 'tournament_match' %}";
+    const tournament_overview = "{% url 'tournaments_overview' %}";
+    const tournamentpage = "{% url 'tournaments_overview' %}";
+    const update_url = "{% url 'update_tournament_match' %}";
+
+    const player1_name = "{{ tournament_match.player1 }}";
+    const player2_name = "{{ tournament_match.player2 }}";
+    const tournamentId = "{{ tournament_match.match_id  }}"; 
+    const tournament_id = "{{ tournament_match.tournament_id  }}";
+
+
+
 </script>
 </html>

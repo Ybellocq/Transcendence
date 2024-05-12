@@ -8,28 +8,138 @@
         <div class="mx-5 mt-3">
         <h4 class="text-white">PINGPONG</h4>
 
-        {% for tournament in tournaments %}
-        <div class="information-container p-3 mt-2 text-white">
-            <p class="fw-bold fs-4 mb-2">Tournois de <span class="fw-bold">{{ tournament.owner_name }}</span></p>
-            <p class="fw-medium fs-6">Ici vous pouvez rejoindre un tournoi déjà existant ou en créer un vous-même ! Vous pouvez inviter vos amis à des tournois privés ou les ouvrir au public.</p>
-        </div>
-        <div class="players-container col-md-2" id="players">
-            {% for username in tournament.username_virtual_player %}
-            <div class="information-container p-3 mt-3 text-white">
-                <p class="fw-bold fs-5 mbt-1 ">{{ username }}</p>
+        {% for tournaments in tournaments %}
+            <div class="information-container p-3 mt-2 text-white">
+                <p class="fw-light fs-4 mb-2">Tournois de <span class="fw-bold">{{ tournaments.owner_name }}</span></p>
+                <p class="fw-medium fs-6">Ici vous pouvez voir les matchs du tournois et les joueurs inscrits</p>
             </div>
-            {% endfor %}
-        </div>
-        <div class="rounds-container col-md-8" id="rounds">
-            
-        </div>
+            <div class="overview row mt-3">
+                <div class="col-md-2" id="players">
+                    
+                    <div class="players-container mt-2 p-2">
+                        <div class="information-container mt-3 text-white">
+                            <p class="text-center fw-bold fs-5 mbt-1">Liste des Joueurs</p>
+                        </div>
+                        {% for username in tournaments.username_virtual_player %}
+                        <div class="information-container mt-3 text-white">
+                            <div class="user-card mx-2 d-flex align-items-center">
+                                <p class="fw-light mb-0">- <span class="fw-bold">{{ username }}</span></p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
 
+                </div>
+                <div class="col-md-10" id="rounds">
+                    <div class="rounds-container mt-2 p-2">
+                        <div class="information-container mt-3 text-white">
+                            <p class="text-center fw-bold fs-4">Liste des matchs du tournois</p>
+                        </div>
+                
+                        <div class="row mt-1 p-5">
+                        {% for id in matchs_list|dictsort:"id" %}
+                            {% if id.player1 != '_' and id.player2 != '_' %}
+                                <div class="col-4 col-md-3">
+                                    <div class="info-box mb-5">
+                                        <div class="p-2">
+                                            {% if id.player1 == id.winner %}
+                                                <p class="fw-bold fs-5 text-white text-center">Match <span class="fw-bold">{{ id.id }}</span></p>
+                                                <p class="fs-5 text-success text-center">{{ id.player1 }}</p>
+                                                <p class="fw-light fs-5 text-white text-center">VS</p>
+                                                <p class="fw-light fs-5 text-danger text-center">{{ id.player2 }}</p>
+                                            {% elif id.player2 == id.winner %}
+                                                <p class="fw-bold fs-5 text-white text-center">Match <span class="fw-bold">{{ id.id }}</span></p>
+                                                <p class="fw-light fs-5 text-danger text-center">{{ id.player1 }}</p>
+                                                <p class="fw-light fs-5 text-white text-center">VS</p>
+                                                <p class="fw-light fs-5 text-success text-center">{{ id.player2 }}</p>
+                                            {% else %}
+                                                <input type="hidden" id="currentMatchId" value="{{ id.id }}">
+                                                <p class="fw-bold fs-5 text-white text-center">Match <span class="fw-bold">{{ id.id }}</span></p>
+                                                <p class="fw-light fs-5 text-white text-center">{{ id.player1 }}</p>
+                                                <p class="fw-light fs-5 text-white text-center">VS</p>
+                                                <p class="fw-light fs-5 text-white text-center">{{ id.player2 }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}                        
+                        </div>
+                    </div>
+                </div>
+                {% if tournaments.state is False %}
+                <div class="d-flex justify-content-center mt-3">
+                    <button class="btn btn btn-success btn-custom" onclick="LaunchMatch()">Lancer le prochain round</button>
+                </div>
+                {% else %}
+                    <p class="text-white text-center mt-5">Le tournois est terminé</p>
+                    <p class="text-white text-center">Le gagnant est <span class="fw-bold">{{ tournaments.winner_name }}</span></p>
+                {% endif %}
+            </div>
         {% endfor %}
     </body>
-
     <script>
-        const TournamentUrl = "{% url 'tournaments_overview' %}";
-    </script>
-    <script src="{% static 'js/tournaments_overview.js' %}"></script>
+        function LaunchMatch() {
+            // get the current match_id
+            var currentMatchId = parseInt(document.getElementById('currentMatchId').value);
 
+            // Get the tournament id
+            {% for tournaments in tournaments %}
+                var tournament_id = '{{ tournaments.id }}';
+            {% endfor %}
+
+            console.log("Match ID: " + currentMatchId);
+
+            // Check in a loop if all 
+            var matchEnded = false;
+            {% for id in matchs_list %}
+                if ({{ id.id }} == currentMatchId) {
+                    if ('{{ id.winner }}' != '...') {
+                        matchEnded = true;
+                    }
+                }
+            {% endfor %}
+
+            // Get all matches ended bego
+
+            console.log("Match ID", currentMatchId, "is ended ? " + matchEnded);
+
+            // If the match is ended, increment the currentMatchId
+            if (matchEnded) {
+                currentMatchId += 1;
+                document.getElementById('currentMatchId').value = currentMatchId;
+            }
+
+            // Get players of the current match
+            var player1 = '';
+            var player2 = '';
+            {% for id in matchs_list %}
+                if ({{ id.id }} == currentMatchId) {
+                    player1 = '{{ id.player1 }}';
+                    player2 = '{{ id.player2 }}';
+                }
+            {% endfor %}
+
+            // Send the request to the server
+            if (matchEnded == false) {
+                fetch(tournament_match, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        'player1': player1,
+                        'player2': player2,
+                        'match_id': currentMatchId,
+                        'tournament_id': tournament_id
+                    })
+                })
+                .then(response => response.json())
+                .then(response => {
+                    loadView(tournament_match);
+                });
+            }
+        }
+    </script>
 {%endblock content%}

@@ -29,7 +29,7 @@ urlpatterns = [
     path('admin/', admin.site.urls), # Admin page localhost:8000/admin
     path('', views.index, name='index'), # Index page localhost:8000
     path('game/', views.game, name='game'), # Game page localhost:8000/game
-    path('ia/', views.gameia, name='gameia'), # Game page localhost:8000/game/ia
+    path('ia', views.gameia, name='gameia'), # Game page localhost:8000/game/ia
     path('register/', views.register, name='register'), # Register page localhost:8000/register
     path('welcome/', views.welcome, name='welcome'), # Welcome page localhost:8000/welcome
     path('profile/', views.profile, name='profile'), # Profile page localhost:8000/profile
@@ -37,6 +37,7 @@ urlpatterns = [
     path('gamepage/', views.gamepage, name='gamepage'), # Game page localhost:8000/gamepage
     path('settings/', views.settings, name='settings'), # Settings page localhost:8000/settings
     path('tournaments/', views.tournaments, name='tournaments'), # Tournament page localhost:8000/tournament
+    path('tournament_match/', views.tournament_match, name='tournament_match'), # Tournament page localhost:8000/tournament
     path('tournaments_overview/', views.tournaments_overview, name='tournaments_overview'), # Tournament page localhost:8000/tournament
     path('404/', views.handler404, name='404'), # 404 page localhost:8000/404
     # API endpoints
@@ -46,9 +47,9 @@ urlpatterns = [
     path('update_loss/', views.update_loss, name='update_loss'), # Update loss endpoint for game 
     path('logout/', views.logout_view, name='logout'), # Logout endpoint
     path('create_tournament/', views.create_tournament, name='create_tournament'), # Create tournament endpoint
+    path('update_tournament_match/', views.update_tournament_match, name='update_tournament_match'), # Update tournament match endpoint
     path('', include('django_prometheus.urls')) # Is the localhost:8000/metrics endpoint
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
