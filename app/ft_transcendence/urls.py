@@ -33,6 +33,7 @@ urlpatterns = [
     path('register/', views.register, name='register'), # Register page localhost:8000/register
     path('welcome/', views.welcome, name='welcome'), # Welcome page localhost:8000/welcome
     path('profile/', views.profile, name='profile'), # Profile page localhost:8000/profile
+    path('match_infos/<int:match_id>/', views.match_infos, name='match_infos'), # Match infos page localhost:8000/match_infos
     path('friends/', views.friends, name='friends'), # Friends page localhost:8000/friends
     path('gamepage/', views.gamepage, name='gamepage'), # Game page localhost:8000/gamepage
     path('settings/', views.settings, name='settings'), # Settings page localhost:8000/settings

@@ -145,18 +145,31 @@ def profile(request):
     win_matches = matches.filter(winner_uid=request.user.id)
     lose_matches = matches.exclude(winner_uid=request.user.id)
 
-    matches_with_date = [(match, timezone.localtime(match.created_at)) for match in matches]
-
-    # Tri de la liste par date de création
-    matches_with_date.sort(key=lambda x: x[1])
-
     data = {
-        'matches_with_date': matches_with_date,  # Liste de tuples (match, created_at)
         'win_matches': win_matches.count(),
-        'lose_matches': lose_matches.count(),
+        'lose_matches': lose_matches.count()
     }
-    return render(request, 'profile.html', {'total_matches': total_matches, 'win': win, 'lose': lose, 'data': data})
+    return render(request, 'profile.html', {'total_matches': total_matches, 'win': win, 'lose': lose, 'data': data, 'matches': matches})
 
+# View Match Infos page : localhost:8000/match_infos/
+# This view displays the match infos page of the application
+# It displays the match infos page with the user's profile picture, username, and a game
+
+@login_required
+def match_infos(request, match_id):
+    match = Game.objects.get(id=match_id)
+    match.score = Game.objects.get(id=match_id).score_player1
+    match.score_player2 = Game.objects.get(id=match_id).score_player2
+    match.winner = Game.objects.get(id=match_id).winner_uid
+    if match.winner == request.user:
+        match.winner = 'Vous'
+    else:
+        match.winner = 'Adversaire'
+    match.time = Game.objects.get(id=match_id).time
+    # Convert the time miliseconds to seconds
+    match.time = match.time / 1000
+    match.time = time.strftime('%M:%S', time.gmtime(match.time))
+    return render(request, 'match_infos.html', {'match': match})
 
 # Tournament page : localhost:8000/tournament/
 # This view displays the tournament page of the application
@@ -331,11 +344,19 @@ def update_score(request):
         user.in_game = False
         user.save()
 
-        winner_uid = json.load(request)['winner_uid']
+        data = json.load(request)
+
+        winner_uid = data['winner_uid']
+        score_player1 = 5
+        score_player2 = data['score']
+        time = data['time']
         game = Game.objects.last()
         if game is not None:
             game.ended = True
             game.winner_uid_id = winner_uid
+            game.score_player1 = score_player1
+            game.score_player2 = score_player2
+            game.time = time
             game.save()
         return JsonResponse({'success': True})
     else:
@@ -354,8 +375,15 @@ def update_loss(request):
         user.save()
 
         game = Game.objects.last()
+        data = json.load(request)
+        score_player1 = data['score']
+        time = data['time']
+        score_player2 = 5
         if game is not None:
             game.ended = True
+            game.score_player1 = score_player1
+            game.score_player2 = score_player2
+            game.time = time
             game.save()
         return JsonResponse({'success': True})
     else:

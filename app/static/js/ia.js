@@ -10,6 +10,7 @@ const initialBallSpeed = 4;
 const maxBallSpeed = 6;
 const keyState = {};
 
+var TimeStart = Date.now();
 
 let player1Score = 0;
 let computerScore = 0;
@@ -308,6 +309,9 @@ function gameLoop() {
     if (location.pathname != '/ia/') {
         return ;
     }
+    if (TimeStart == null) {
+        TimeStart = Date.now();
+    }
     aiLogic();
     draw();
     handleKeyPress();
@@ -348,6 +352,7 @@ function predictY(ball) {
 }
 
 function endGame() {
+    var TimeEnd = Date.now() - TimeStart;
     if (player1Score === 5) {
         fetch(updateScoreUrl, {
             method: 'POST',
@@ -356,7 +361,9 @@ function endGame() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                'winner_uid': userId
+                'winner_uid': userId,
+                'score': player2Score,
+                'time': TimeEnd
             })
         }).then(response => {
             if (response.ok) {
@@ -380,7 +387,9 @@ function endGame() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                'winner_uid': '0'
+                'winner_uid': '0',
+                'score': player1Score,
+                'time': TimeEnd
             })
         }).then(response => {
             if (response.ok) {

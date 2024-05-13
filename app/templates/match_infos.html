@@ -1,0 +1,54 @@
+{% extends 'base/navbar.html' %}
+{%block content%}
+    <div class="mx-5 mt-3">
+    <h4 class="text-white">PINGPONG</h4>
+    <div class="information-container p-3 mt-2 text-white">
+        <p class="fw-lighter fs-4 mb-2">👋 Information de match</span></p>
+        <p class="fw-medium fs-6">Vous êtes actuellement sur la page d’information de match, Si vous souhaitez jouer à un super jeu. Vous pouvez cliquer sur la catégorie “Jeu” Dans la barre de navigation ci-dessus</p>
+    </div>
+
+    <div class="mt-2">
+        <a class="text-white redir" href="{% url 'profile' %}">Retournez</a>
+    </div>
+
+
+    <div class="row mt-5 text-left fs-5 fw-medium">
+        <div class="col-12 col-md-4">
+            <div class="info-box mb-5">
+                <div class="mb-3">
+                    <p class="form-label text-white fw-bold fs-4">Score</p>
+                    <p class="form-label text-secondary fw-lighter fs-6">Score du match</p>
+                    <div class="mb-2">
+                        <p class="text-white fs-3 fw-bold">{{ match.score }} - {{ match.score_player2 }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="info-box mb-5">
+                <div class="mb-3">
+                    <p class="form-label text-white fw-bold fs-4">Temp du match</p>
+                    <p class="form-label text-secondary fw-lighter fs-6">Temp du match</p>
+                    <div class="mb-2">
+                        <p class="text-white fs-3 fw-bold">{{ match.time }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="info-box mb-5">
+                <div class="mb-3">
+                    <p class="form-label text-white fw-bold fs-4">Gagnant du match</p>
+                    <p class="form-label text-secondary fw-lighter fs-6">Gagnant du match</p>
+                    <div class="mb-2">
+                        <p class="text-white fs-3 fw-bold">{{ match.winner }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{%endblock content%}

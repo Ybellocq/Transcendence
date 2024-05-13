@@ -10,6 +10,7 @@ const initialBallSpeed = 3; // Update speed when in pc screen
 const maxBallSpeed = 10;
 const keyState = {};
 
+var TimeStart = null;
 
 let player1Score = 0;
 let player2Score = 0;
@@ -239,6 +240,9 @@ function gameLoop() {
     if (location.pathname != '/game/') {
         return ;
     }
+    if (TimeStart == null) {
+        TimeStart = Date.now();
+    }
     update();
     draw();
     handleKeyPress()
@@ -250,6 +254,8 @@ function gameLoop() {
 }
 
 function endGame() {
+    var TimeEnd = Date.now() - TimeStart;
+    console.log(TimeEnd);
     if (player1Score === 5) {
         fetch(updateScoreUrl, {
             method: 'POST',
@@ -258,7 +264,9 @@ function endGame() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                'winner_uid': userId
+                'winner_uid': userId,
+                'score': player2Score,
+                'time': TimeEnd
             })
         }).then(response => {
             if (response.ok) {
@@ -282,7 +290,9 @@ function endGame() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                'winner_uid': '0'
+                'winner_uid': '0',
+                'score': player1Score,
+                'time': TimeEnd
             })
         }).then(response => {
             if (response.ok) {

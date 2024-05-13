@@ -44,30 +44,33 @@
                         </div>
                     </div>
                 </div> 
+
+
                 {% if data.win_matches > 0 or data.lose_matches > 0 %}
-                    <!-- Match history -->
                     <div class="col-12 col-md-15">
                         <div class="info-box mb-5">
                             <div class="mb-3">
                                 <p for="username" class="form-label text-white fw-bold fs-4">Historique des matchs</p>
                                 <p class="form-label text-secondary fw-lighter fs-6">Liste des matchs joués</p>
                                 <div class="mb-2">
-                                    <ul class="text-white fs-5 fw-lighter">
-                                        {% for match_with_date in data.matches_with_date %}
+                                    {% for id in matches %}
+                                        <ul class="text-white fs-5 fw-lighter">
                                             <li>
-                                                {{ match_with_date.1|date:"d/m H:i" }} | 
+                                                {{ id.created_at }} |
                                                 {% if forloop.counter <= data.win_matches %}
-                                                    <span class="text-success">Match <span class="fw-bold">gagné</span></span>
+                                                    <a class="text-success redir" href="{% url 'match_infos' id.id %}">Match <span class="fw-bold redir" href="{% url 'match_infos' id.id %}">gagné</span></a>
                                                 {% else %}
-                                                    <span class="text-danger">Match <span class="fw-bold">perdu</span></span>
+                                                    <a class="text-danger redir" href="{% url 'match_infos' id.id %}">Match <span class="fw-bold redir" href="{% url 'match_infos' id.id %}">perdu</span></a>
                                                 {% endif %}
                                             </li>
-                                        {% endfor %}
-                                    </ul>
+                                        </ul>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
-                    </div>              
+                    </div>    
+                    
+                    
                     <div class="col col-md-2 py-1">
                         <div class="info-box mb-5">
                             <canvas id="myChart"></canvas>

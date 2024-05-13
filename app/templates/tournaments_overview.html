@@ -69,7 +69,7 @@
                 </div>
                 {% if tournaments.state is False %}
                 <div class="d-flex justify-content-center mt-3">
-                    <a class="btn btn-success btn-custom" href="{% url 'tournament_match' %}">Lancer le prochain round</a>
+                    <a class="btn btn-success btn-custom redir" href="{% url 'tournament_match' %}">Lancer le prochain round</a>
                 </div>
                 {% else %}
                     <p class="text-white text-center mt-5">Le tournois est terminé</p>

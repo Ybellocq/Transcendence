@@ -2,7 +2,12 @@
 
 VAULT_ADDR="http://0.0.0.0:8200"
 
+sleep 50
+
 echo "Initialisation de Vault..."
+
+sleep 50
+
 init_output=$(docker exec vault vault operator init)
 if [ $? -ne 0 ]; then
     echo "Erreur lors de l'initialisation de Vault"
