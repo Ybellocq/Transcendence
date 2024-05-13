@@ -75,39 +75,10 @@ canvas {
     padding-bottom: 100px;
 }
 
-.bg-darker {
-    background: #1A1A1A;
-}
-
-.custom-btn-width {
-    width: 95%;
-}
-
-.modal .btn.custom-btn {
-    background-color: #198754;
-    color: white;
-    border: none;   
-}
-
-.modal .btn.custom-btn:hover {
-    background-color: #086138;
-    color: white;
-}
 
 /* ########################################## */
 /* index.html ou appelez login.html plus tard*/
 /* ########################################## */
-
-body.login {
-    background-color: #1E1E1E !important;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
 .login-container {
     width: 300px;
@@ -323,6 +294,44 @@ body .navbar-login{
     color: white;
 }
 
+.bg-darker {
+    background: #1A1A1A;
+}
+
+.modal .btn.custom-btn {
+    background-color: #198754;
+    color: white;
+    border: none;   
+}
+
+.modal .btn.custom-btn:hover {
+    background-color: #086138;
+    color: white;
+}
+
+.info-box {
+    background-color: #1C1B1B;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 1vh 1vh 0 rgba(0,0,0,0.25);
+}
+
+.btn-custom-w {
+    width: 100%;
+}
+
+.custom-btn {
+    background-color: #198754;
+    color: white;
+    border: none;
+}
+
+.custom-btn:hover {
+    background-color: #086138;
+    color: white;
+}
+
 /* ########################################## */
 /* navbar.html */
 /* ########################################## */
@@ -340,4 +349,9 @@ body .navbar-login{
 .custom-btn:hover {
     background-color: #086138;
     color: white;
+}
+
+.dropdown-item .active {
+    font-weight: bold !important;
+    background-color: red;
 }

@@ -98,7 +98,7 @@ class UpdateUserNameForm(forms.ModelForm):
             'style': 'background-color: rgba(198, 182, 182, 0.1); border: none; border-radius: 4px; color: white;'}),
         required=False,
         max_length=20,
-        min_length=1,
+        min_length=2,
         error_messages={'required': 'Veuillez entrer au moins un nom d’utilisateur'},
     )
 

@@ -26,6 +26,13 @@ function loadView(url, needHistory) {
             else if (url == '/gamepage/') {
                 setupLaunch();
             }
+            else if (url == '/friends/') {
+                setupAddFriends();
+                setupFriends();
+            }
+            else if (url == '/tournament_match/') {
+                setupTournament();
+            }
             // Attachement des écouteurs d'événements spécifiques à la vue chargée
             attachEventListeners();
             // Optionnel : Mise en place des actions spécifiques en fonction de l'URL chargée
@@ -53,9 +60,56 @@ function attachEventListeners() {
             link.setAttribute('data-click-event-attached', true);
         }
     });
+
+    // Hide navbar on index page and register page
+    const navbar = document.querySelector('.navbar');
+    if (location.pathname == '/' || location.pathname == '/register/' || location.pathname == '/logout/') {
+        navbar.style.display = 'none';
+    } else {
+        navbar.style.display = 'block';
+    }
+
+    // Highlight active link in navbar
+    const navbarLinks = document.querySelectorAll('.nav-link');
+    navbarLinks.forEach(link => {
+        if (link.getAttribute('href') === location.pathname) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+
+    // Manage the profile page with the chart
+    if (location.pathname == '/profile/') {
+        console.log('profile');
+        var colors = ['#007bff','#333333'];
+        var chartsOptions = {
+            cutoutPercentage: 85, 
+            legend: {position:'bottom', padding:5, labels: {pointStyle:'circle', usePointStyle:true}}
+        };
+        var chDonutData = {
+            labels: ['Victoires', 'Défaites'],
+            datasets: [
+                {
+                    backgroundColor: colors.slice(0, 1),
+                    borderWidth: 0,
+                    data: [parseInt(document.getElementById('victories').value), parseInt(document.getElementById('defeats').value)]
+                }
+            ]
+        };
+        var chDonut = document.getElementById("myChart");
+        if (chDonut) {
+            new Chart(chDonut, {
+                type: 'pie',
+                data: chDonutData,
+                options: chartsOptions
+            });
+        }
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+   
 	attachEventListeners();
 
     const url = location.pathname;
@@ -68,6 +122,13 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     else if (url == '/gamepage/') {
         setupLaunch();
+    }
+    else if (url == '/friends/') {
+        setupAddFriends();
+        setupFriends();
+    }
+    else if (url == '/tournament_match/') {
+        setupTournament();
     }
 	window.addEventListener('popstate', function(event) {
 		let url = location.pathname;

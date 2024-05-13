@@ -20,11 +20,4 @@
                 </div>
             </div>
     </body>
-    <script>
-        const searchUrl = "{% url 'search_friends' %}";
-        const addFriendUrl = "{% url 'add_friends' %}";
-        const csrfToken = "{{ csrf_token }}";
-    </script>
-    <script src="{% static 'js/searchFriends.js' %}"></script>
-    <script src="{% static 'js/addFriends.js' %}"></script>
 {%endblock content%}

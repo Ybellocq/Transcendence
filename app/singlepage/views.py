@@ -7,7 +7,7 @@ from .forms import UsernamesForm, PasswordForm, SignupForm, UpdateUserNameForm, 
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
-from singlepage.models import User, Friend, Game, Tournament
+from singlepage.models import User, Friend, Game, Tournament, Tournament_Match
 import time
 import json
 from django.contrib.auth import get_user_model
@@ -61,7 +61,7 @@ def register(request):
         if form.is_valid(): 
             user = form.save()
             login(request, user)
-            return render(request, 'welcome.html')
+            return redirect('/welcome/')
         else:
             message = 'Votre formulaire contient des erreurs'
             return render(request, 'register.html', {'form': form, 'message': message})
@@ -79,12 +79,15 @@ def welcome(request):
     for friend in my_friends:
         friend_user = get_user_model().objects.get(id=friend.user2_uid.id)
         friend_is_online = friend_user.is_online
+        friend_is_ongame = friend_user.in_game
         online_status = 'En ligne' if friend_is_online else 'Hors ligne'
+        game_status = 'En jeu' if friend_is_ongame else 'Hors jeu'
         friends.append({
             'username': friend_user.username,
             'profile_image': request.build_absolute_uri(friend_user.profile_image.url),
             'id': friend_user.id,
-            'is_online': online_status
+            'is_online': online_status,
+            'is_ongame': game_status,
         })
     if request.user.is_authenticated:
         return render(request, 'welcome.html', {'user': request.user, 'friends': friends})
@@ -103,6 +106,7 @@ def settings(request):
     picture_form = UpdatePictureForm(instance=request.user)
     form = UpdateUserNameForm(instance=request.user)
     password_form = UpdatePasswordForm(instance=request.user)
+    message = ''
     if request.method == 'POST':
         picture_form = UpdatePictureForm(request.POST, request.FILES, instance=request.user)
         form = UpdateUserNameForm(request.POST, instance=request.user)
@@ -118,11 +122,13 @@ def settings(request):
                 user.save()
                 update_session_auth_hash(request, user)
             else:
+                message = 'Veuillez entrer un mot de passe valide'
                 password_form = UpdatePasswordForm(instance=request.user)
         else:
+            message = 'Votre formulaire contient des erreurs'
             picture_form = UpdatePictureForm(instance=request.user)
             form = UpdateUserNameForm(instance=request.user)
-    return render(request, 'settings.html', {'form': form, 'picture_form': picture_form, 'password_form': password_form,})
+    return render(request, 'settings.html', {'form': form, 'picture_form': picture_form, 'password_form': password_form, 'message': message})
 
 # View Profile page : localhost:8000/profile/
 # This view displays the profile page of the application
@@ -139,18 +145,31 @@ def profile(request):
     win_matches = matches.filter(winner_uid=request.user.id)
     lose_matches = matches.exclude(winner_uid=request.user.id)
 
-    matches_with_date = [(match, timezone.localtime(match.created_at)) for match in matches]
-
-    # Tri de la liste par date de création
-    matches_with_date.sort(key=lambda x: x[1])
-
     data = {
-        'matches_with_date': matches_with_date,  # Liste de tuples (match, created_at)
         'win_matches': win_matches.count(),
-        'lose_matches': lose_matches.count(),
+        'lose_matches': lose_matches.count()
     }
-    return render(request, 'profile.html', {'total_matches': total_matches, 'win': win, 'lose': lose, 'data': data})
+    return render(request, 'profile.html', {'total_matches': total_matches, 'win': win, 'lose': lose, 'data': data, 'matches': matches})
 
+# View Match Infos page : localhost:8000/match_infos/
+# This view displays the match infos page of the application
+# It displays the match infos page with the user's profile picture, username, and a game
+
+@login_required
+def match_infos(request, match_id):
+    match = Game.objects.get(id=match_id)
+    match.score = Game.objects.get(id=match_id).score_player1
+    match.score_player2 = Game.objects.get(id=match_id).score_player2
+    match.winner = Game.objects.get(id=match_id).winner_uid
+    if match.winner == request.user:
+        match.winner = 'Vous'
+    else:
+        match.winner = 'Adversaire'
+    match.time = Game.objects.get(id=match_id).time
+    # Convert the time miliseconds to seconds
+    match.time = match.time / 1000
+    match.time = time.strftime('%M:%S', time.gmtime(match.time))
+    return render(request, 'match_infos.html', {'match': match})
 
 # Tournament page : localhost:8000/tournament/
 # This view displays the tournament page of the application
@@ -170,6 +189,7 @@ def tournaments(request):
                 'tournament': tournament,
                 'id': tournament.id,
                 'number_of_players': tournament.number_of_players,
+                'number_of_matchs': tournament.number_of_matchs,
                 'number_of_rounds': tournament.number_of_rounds,
                 'created_at': tournament.created_at,
                 'state': tournament.state,
@@ -188,22 +208,35 @@ def tournaments(request):
 @login_required
 def tournaments_overview(request):
     if request.user.is_authenticated:
-        tournaments_overview = Tournament.objects.filter(owner_uid_id=request.user.id)
-        tournaments_overview = tournaments_overview.filter(state=False)
+        tournaments_overview = Tournament.objects.filter(owner_uid_id=request.user.id).last()
         # if user id have already created a tournament and it is not started yet return a message
         data = []
-        for tournament in tournaments_overview:
-            data.append({
-                'owner_name': request.user.username, 
-                'tournament': tournament,
-                'id': tournament.id,
-                'number_of_players': tournament.number_of_players,
-                'number_of_rounds': tournament.number_of_rounds,
-                'created_at': tournament.created_at,
-                'state': tournament.state,
-                'username_virtual_player': tournament.username_virtual_player,
+        data.append({
+            'owner_name': request.user.username,
+            'tournament': tournaments_overview,
+            'id': tournaments_overview.id,
+            'number_of_players': tournaments_overview.number_of_players,
+            'number_of_matchs': tournaments_overview.number_of_matchs,
+            'number_of_rounds': tournaments_overview.number_of_rounds,
+            'created_at': tournaments_overview.created_at,
+            'state': tournaments_overview.state,
+            'username_virtual_player': tournaments_overview.username_virtual_player,
+            'winner_name': tournaments_overview.winner_name,
+        })
+
+        matchs_data = []
+        matchs_list = Tournament_Match.objects.filter(tournament_id=tournaments_overview.id)
+        for matchs in matchs_list:
+            matchs_data.append({
+                'tournament_id': tournaments_overview.id,
+                'id': matchs.match_id,
+                'round': matchs.round_id,
+                'player1': matchs.player1,
+                'player2': matchs.player2,
+                'winner': matchs.winner,
             })
-        return render(request, 'tournaments_overview.html', {'tournaments': data})
+
+        return render(request, 'tournaments_overview.html', {'tournaments': data, 'matchs_list': matchs_data})
     else:
         message = 'Vous devez être connecté pour accéder à cette page'
         return render(request, 'index.html', {'message': message, 'form': UsernamesForm(), 'password_form': PasswordForm()})
@@ -226,12 +259,7 @@ def friends(request):
 
 @login_required
 def gamepage(request):
-    if request.user.is_authenticated:
-        return render(request, 'gamepage.html', {'user': request.user})
-    else:
-        message = 'Vous devez être connecté pour accéder à cette page'
-        return render(request, 'index.html', {'message': message, 'form': UsernamesForm(), 'password_form': PasswordForm()})
- 
+    return render(request, 'gamepage.html', {'user': request.user})
 # View Game page : localhost:8000/game/
 # This view displays the game page of the application
 # It displays the game page with the user's profile picture, username, and a game
@@ -241,13 +269,41 @@ def gamepage(request):
 def game(request):
     if request.method == 'POST':
         request.user.total_matches += 1
+        request.user.in_game = True
         request.user.save()
 
         game = Game.objects.create(local=True, tournament=False, ended=False, player_uid_id=request.user.id)
         game.save()
         return JsonResponse({'success': True})
     return render(request, 'game.html')
-    
+
+@login_required
+def tournament_match(request):
+    if request.method == 'POST':
+        data_player = json.loads(request.body)
+        player1 = data_player.get('player1')
+        player2 = data_player.get('player2')
+        match_id = data_player.get('match_id')
+        tournament_id = data_player.get('tournament_id')
+        data = {
+            'player1': player1,
+            'player2': player2,
+            'match_id': match_id,
+            'tournament_id': tournament_id
+        }
+        request.session['data'] = data
+        return JsonResponse({'success': True})
+    else:
+        tournaments_overview = Tournament.objects.filter(owner_uid_id=request.user.id).last()
+        match = Tournament_Match.objects.filter(tournament_id=tournaments_overview.id, winner='...').first()
+        data =  {
+            'player1': match.player1,
+            'player2': match.player2,
+            'match_id': match.match_id,
+            'tournament_id': match.tournament_id
+        }
+    return render(request, 'tournament_match.html', {'tournament_match': data})
+
 # View Game page : localhost:8000/game/ia
 # This view displays the game page of the application
 # It displays the game page with the user's profile picture, username, and a game
@@ -257,6 +313,7 @@ def game(request):
 def gameia(request):
     if request.method == 'POST':
         request.user.total_matches += 1
+        request.user.in_game = True
         request.user.save()
         level = json.load(request)['level']
         request.session['level'] = level 
@@ -284,13 +341,22 @@ def update_score(request):
     if request.method == 'POST':
         user = request.user
         user.win += 1
+        user.in_game = False
         user.save()
 
-        winner_uid = json.load(request)['winner_uid']
+        data = json.load(request)
+
+        winner_uid = data['winner_uid']
+        score_player1 = 5
+        score_player2 = data['score']
+        time = data['time']
         game = Game.objects.last()
         if game is not None:
             game.ended = True
             game.winner_uid_id = winner_uid
+            game.score_player1 = score_player1
+            game.score_player2 = score_player2
+            game.time = time
             game.save()
         return JsonResponse({'success': True})
     else:
@@ -305,16 +371,70 @@ def update_loss(request):
     if request.method == 'POST':
         user = request.user
         user.lose += 1
+        user.in_game = False
         user.save()
 
         game = Game.objects.last()
+        data = json.load(request)
+        score_player1 = data['score']
+        time = data['time']
+        score_player2 = 5
         if game is not None:
             game.ended = True
+            game.score_player1 = score_player1
+            game.score_player2 = score_player2
+            game.time = time
             game.save()
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False})
 
+@login_required
+def update_tournament_match(request):
+    if request.method == 'POST':
+        data = json.load(request)
+        match_id = data['match_id']
+        winner = data['winner']
+        Tournament_up = Tournament.objects.filter(owner_uid_id=request.user.id).last()
+        tournament_id = Tournament_up.id
+        match = Tournament_Match.objects.get(match_id=match_id, tournament_id=tournament_id)
+        match.winner = winner
+        match.save()
+
+        next_round = match.round_id + 1
+        next_matchs = Tournament_Match.objects.filter(tournament_id=match.tournament_id, round_id=next_round)
+        for next_match in next_matchs:
+            if next_matchs:
+                if next_match.player1 == "_":
+                    next_match.player1 = winner
+                    next_match.save()
+                    break
+                elif next_match.player2 == "_":
+                    next_match.player2 = winner
+                    next_match.save()
+                    break
+
+        # Check if the tournament is over
+        tournament = Tournament.objects.get(id=tournament_id)
+        matchs = Tournament_Match.objects.filter(tournament_id=tournament_id)
+        matchs = matchs.filter(winner="...")
+        if not matchs:
+            tournament.winner_name = winner
+            tournament.state = True
+            tournament.save()
+
+        return JsonResponse({'success': True})
+    else:
+        tournaments_overview = Tournament.objects.filter(owner_uid_id=request.user.id).last()
+        match = Tournament_Match.objects.filter(tournament_id=tournaments_overview.id, winner='...').first()
+        if not match:
+            return JsonResponse({'success': False})
+        data =  {
+            'player1': match.player1,
+            'player2': match.player2,
+            'match_id': match.match_id,
+        }
+    return JsonResponse({'tournament_match': data})
 # Handler for 404 errors
 # This handler is called when a page is not found
 # It renders the 404.html template
@@ -381,10 +501,13 @@ def create_tournament(request):
 
         if Tournament.objects.filter(owner_uid_id=request.user.id).filter(state=False).exists():
             return JsonResponse({'success': False, 'message': 'Vous avez déjà créé un tournoi'})
-        
-        tournament = Tournament.objects.create(owner_uid_id=request.user.id, username_virtual_player=playerList, created_at=timezone.now(), state=False, number_of_players=len(playerList), number_of_rounds=len(playerList) - 1)
-        tournament.save()
 
+        rounds = calculate_rounds(len(playerList))
+        time = timezone.now()
+        tournament = Tournament.objects.create(owner_uid_id=request.user.id, username_virtual_player=playerList, created_at=time, state=False, number_of_players=len(playerList), number_of_matchs=len(playerList) - 1, number_of_rounds=rounds)
+        tournament.save()
+        
+        create_tournament_matchs(tournament)
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False, 'message': 'Une erreur s’est produite'})
@@ -398,3 +521,48 @@ def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
     return redirect('/')
+
+# Utils for create_tournament
+# This function define the number of rounds in function of the number of players
+
+def calculate_rounds(num_players):
+    if num_players == 2:
+        return (1)
+    elif num_players <= 4:
+        return (2)
+    elif num_players <= 8:
+        return (3)
+    elif num_players <= 16:
+        return (4)
+    else:
+        return (0)
+
+# Utils for create_tournament
+# This function create every matchs of the tournament
+
+def create_tournament_matchs(tournament):
+
+    player = 0
+    matchId = 1
+    for i in range(tournament.number_of_rounds):
+
+        j = 1
+        while j*2 < tournament.number_of_players:
+            j*= 2
+        matchs_in_rounds = tournament.number_of_players - j
+        for k in range(matchs_in_rounds):
+            p1 = define_player(tournament.username_virtual_player, player)
+            p2 = define_player(tournament.username_virtual_player, player + 1)
+            match = Tournament_Match.objects.create(tournament_id=tournament, match_id=matchId, round_id=i + 1, player1=p1, player2=p2, winner="...")
+            match.save()
+            matchId+=1
+            player+=2
+        tournament.number_of_players -= matchs_in_rounds
+    return
+
+
+def define_player(PlayerList, num):
+    if num < len(PlayerList):
+        return PlayerList[num]
+    else:
+        return "_"
