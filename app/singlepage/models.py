@@ -29,6 +29,7 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
     total_matches = models.IntegerField(default=0, blank=True)
+    in_game = models.BooleanField(default=False)
     win = models.IntegerField(default=0, blank=True)
     lose = models.IntegerField(default=0, blank=True)   
     is_online = models.BooleanField(default=False)
