@@ -39,13 +39,14 @@ function SendInformations() {
     var allFieldsFilled = true;
     var allFieldUnique = true;
 
+    console.log(players)
     players.forEach(player => {
         if (player.value === "") {
             allFieldsFilled = false;
         }
         playersList.forEach(name =>{
             if (name === player.value) {
-                allFieldsUnique = false;
+                allFieldUnique = false;
             }
         })
         playersList.push(player.value);
@@ -61,7 +62,7 @@ function SendInformations() {
         return;
     }
 
-    if (!allFieldsUnique) {
+    if (!allFieldUnique) {
         errorMessage.textContent = "Veuillez remplir tous les champs, de pseudo unique.";
         return;
     }
