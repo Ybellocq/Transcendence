@@ -362,7 +362,7 @@ function endGame() {
             },
             body: JSON.stringify({
                 'winner_uid': userId,
-                'score': player2Score,
+                'score': computerScore,
                 'time': TimeEnd
             })
         }).then(response => {
