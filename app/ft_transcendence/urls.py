@@ -51,6 +51,3 @@ urlpatterns = [
     path('update_tournament_match/', views.update_tournament_match, name='update_tournament_match'), # Update tournament match endpoint
     path('', include('django_prometheus.urls')) # Is the localhost:8000/metrics endpoint
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
