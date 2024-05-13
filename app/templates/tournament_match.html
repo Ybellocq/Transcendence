@@ -11,9 +11,11 @@
         </div>
 
         <div class="d-flex justify-content-center">
-                <p class="text-success fs-5 fw-bold">{{tournament_match.player1}} <span class="text-white fw-light">Contre</span> {{tournament_match.player2}}</p>
+            <p class="text-white fs-5 fw-light">Match : <span class="fw-bold">{{tournament_match.match_id}}</span></p>
         </div>
-
+        <div class="d-flex justify-content-center">
+            <p class="text-success fs-5 fw-bold">{{tournament_match.player1}} <span class="text-white fw-light">Contre</span> {{tournament_match.player2}}</p>
+        </div>
         <div class="mx-5 text-center">
             <div class="game-container embed-responsive embed-responsive-16by9">
                 <canvas id="pongTournamentCanvas" class="embed-responsive-item" width="800" height="400"></canvas>
