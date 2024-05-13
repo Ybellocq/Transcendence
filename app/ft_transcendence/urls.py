@@ -29,7 +29,7 @@ urlpatterns = [
     path('admin/', admin.site.urls), # Admin page localhost:8000/admin
     path('', views.index, name='index'), # Index page localhost:8000
     path('game/', views.game, name='game'), # Game page localhost:8000/game
-    path('ia', views.gameia, name='gameia'), # Game page localhost:8000/game/ia
+    path('ia/', views.gameia, name='gameia'), # Game page localhost:8000/game/ia
     path('register/', views.register, name='register'), # Register page localhost:8000/register
     path('welcome/', views.welcome, name='welcome'), # Welcome page localhost:8000/welcome
     path('profile/', views.profile, name='profile'), # Profile page localhost:8000/profile
