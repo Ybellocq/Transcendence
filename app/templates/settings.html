@@ -67,6 +67,10 @@
                             <button type="submit" class="btn btn-primary text-center custom-btn custom-btn-width">Changer mon image</button>
                         </div>
                     </div>
+                    {{form.non_field_errors}}
+                    {% for field in form %}
+                        <h6 class="text-center text-danger mb-3 fw-normal">{{ field.errors }}</h6>
+                    {% endfor %}
                 </div>
             </form>
         </div>
