@@ -12,6 +12,8 @@
                 <div class="col-12 col-md-4">
                     <div class="info-box mb-5">
                         <div class="mb-3">
+                            <input type="hidden" id="victories" value="{{ win }}">
+                            <input type="hidden" id="defeats" value="{{ lose }}">
                             <p for="username" class="form-label text-white fw-bold fs-4">Nombre de matchs</p>
                             <p class="form-label text-secondary fw-lighter fs-6">Nombre de matchs joués</p>
                             <div class="mb-2">
@@ -66,7 +68,6 @@
                             </div>
                         </div>
                     </div>              
-                    <!-- Chart -->
                     <div class="col col-md-2 py-1">
                         <div class="info-box mb-5">
                             <canvas id="myChart"></canvas>
@@ -75,30 +76,5 @@
                 {% endif %}
             </div>
         </div>
-        <script>
-            var colors = ['#007bff','#333333'];
-            var chartsOptions = {
-                cutoutPercentage: 85, 
-                legend: {position:'bottom', padding:5, labels: {pointStyle:'circle', usePointStyle:true}}
-            };
-            var chDonutData = {
-                labels: ['Victoires', 'Défaites'],
-                datasets: [
-                    {
-                        backgroundColor: colors.slice(0, 1),
-                        borderWidth: 0,
-                        data: [{{ data.win_matches }}, {{ data.lose_matches }}]
-                    }
-                ]
-            };
-            var chDonut = document.getElementById("myChart");
-            if (chDonut) {
-                new Chart(chDonut, {
-                    type: 'pie',
-                    data: chDonutData,
-                    options: chartsOptions
-                });
-            }
-        </script>
     </body>
 {%endblock content%}  
