@@ -277,7 +277,6 @@ function adjustAiTarget() {
         /*
         if (aiPaddle.y + aiPaddle.height / 2 < aiTargetY)
         {
-            console.log("TEST");
             movePaddle(aiPaddle, aiPaddle.y + aiPaddle.dy);
         }
         else 

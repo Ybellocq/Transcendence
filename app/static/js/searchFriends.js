@@ -21,7 +21,6 @@ function addFriend(id) {
 
     .then(response => response.json())
     .then(response => {
-        console.log(response);
     });
 }
 function setupFriends() {
