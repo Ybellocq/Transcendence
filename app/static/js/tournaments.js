@@ -1,15 +1,4 @@
 
-/* TournamentInfo() */
-
-function setupTournamentPage() {
-    
-}
-
-function TournamentInfo(tournament_id) {
-    console.log(tournament_id);
-}
-
-
 /* AddPlayer() */
 
 function AddPlayer() {
@@ -48,16 +37,32 @@ function SendInformations() {
     var playersList = [];
     var errorMessage = document.getElementById("maxInputMessage");
     var allFieldsFilled = true;
+    var allFieldUnique = true;
 
     players.forEach(player => {
         if (player.value === "") {
             allFieldsFilled = false;
         }
+        playersList.forEach(name =>{
+            if (name === player.value) {
+                allFieldsUnique = false;
+            }
+        })
         playersList.push(player.value);
     });
 
     if (!allFieldsFilled) {
         errorMessage.textContent = "Veuillez remplir tous les champs.";
+        return;
+    }
+
+    if (playersList.length < 2) {
+        errorMessage.textContent = "Veuillez rajouter plus de joueurs, Joueurs minimum 2.";
+        return;
+    }
+
+    if (!allFieldsUnique) {
+        errorMessage.textContent = "Veuillez remplir tous les champs, de pseudo unique.";
         return;
     }
 
