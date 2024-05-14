@@ -195,62 +195,54 @@ function handleKeyPress() {
 
 
 function moveBall() {
-    ball.x += ball.dx;
-    ball.y += ball.dy;
+    // Prévoir le prochain mouvement de la balle
+    let nextX = ball.x + ball.dx;
+    let nextY = ball.y + ball.dy;
 
+    // Vérifier la collision avec le palet du joueur
+    if (nextX - ball.radius < paddleWidth &&
+        nextY + ball.radius > player1Y &&
+        nextY - ball.radius < player1Y + paddleHeight &&
+        nextX - ball.radius >= 0) { // Assurer que la balle ne pénètre pas dans le palet
+        ball.dx = -ball.dx * getRandomNumber(0.8, 1.2);
+        ball.dy = ball.dy * getRandomNumber(0.8, 1.2);
+        adjustAiTarget();
+    }
 
-        if ((ball.y + ball.radius >= canvas.height || ball.y - ball.radius <= 0)) {
-            ball.dy = -ball.dy * getRandomNumber(0.8, 1.2);
-            ball.y += ball.dy;
-        }
-    
-        // Envoyer la balle de l'autre côté si elle touche un joueur
-        else if (ball.x - ball.radius < paddleWidth &&
-            ball.y + ball.radius > player1Y &&
-            ball.y - ball.radius < player1Y + paddleHeight) {
-            ball.dx = -ball.dx * getRandomNumber(0.8, 1.2); //0,8, 1,2
-            ball.x += ball.dx;
-            adjustAiTarget();
-        }
-    
-        else if (ball.x + ball.radius > canvas.width - paddleWidth &&
-            ball.y + ball.radius > aiPaddle.y &&
-            ball.y - ball.radius < aiPaddle.y + paddleHeight) {
-            ball.dx = -ball.dx * getRandomNumber(0.8, 1.2);
-            ball.x += ball.dx;
-            adjustAiTarget();
-    
-        }
+    // Vérifier la collision avec le palet de l'IA
+    if (nextX + ball.radius > canvas.width - paddleWidth &&
+        nextY + ball.radius > aiPaddle.y &&
+        nextY - ball.radius < aiPaddle.y + paddleHeight &&
+        nextX + ball.radius <= canvas.width) { // Assurer que la balle ne pénètre pas dans le palet
+        ball.dx = -ball.dx * getRandomNumber(0.8, 1.2);
+        ball.dy = ball.dy * getRandomNumber(0.8, 1.2);
+        adjustAiTarget();
+    }
 
-        if (ball.x + ball.radius > canvas.width)
-        {
+    // Vérifier la collision avec les bords du canvas
+    if (nextY + ball.radius >= canvas.height || nextY - ball.radius <= 0) {
+        ball.dy = -ball.dy * getRandomNumber(0.8, 1.2);
+    }
+
+    if ((nextX + ball.radius >= canvas.width && ball.dx > 0) || (nextX - ball.radius <= 0 && ball.dx < 0)) {
+        // Vérifier si la balle a franchi la ligne de but
+        if (nextX + ball.radius >= canvas.width) {
             player1Score++;
             resetBall();
             resetPaddles();
-        }
-        if (ball.x - ball.radius < 0)
-        {
+            return;
+        } else if (nextX - ball.radius <= 0) {
             computerScore++;
             resetBall();
             resetPaddles();
+            return;
         }
+        ball.dx = -ball.dx * getRandomNumber(0.8, 1.2);
+    }
 
-
-        if (Math.abs(ball.dx) < maxBallSpeed) {
-            ball.dx += ball.dx > 0 ? 0.001 : -0.001;
-        }
-        else
-        {
-            ball.dx = maxBallSpeed;
-        }
-    
-        if (Math.abs(ball.dy) < maxBallSpeed) {
-            ball.dy += ball.dy > 0 ? 0.001 : -0.001;
-        }
-        else
-        {
-            ball.dy = maxBallSpeed;
-        }
+    // Déplacer la balle
+    ball.x += ball.dx;
+    ball.y += ball.dy;
 }
 
 function movePaddle(paddle, y) 
@@ -297,10 +289,16 @@ function aiLogic() {
         pY = predictY(ball);   
      }
         
-    if (aiPaddle.y + aiPaddle.height / 2 - pY < 10)
-        movePaddle(aiPaddle, aiPaddle.y + aiPaddle.dy);
-    else if (aiPaddle.y + aiPaddle.height / 2 + pY > 10)
-        movePaddle(aiPaddle, aiPaddle.y - aiPaddle.dy);    
+     let difference = pY - (aiPaddle.y + aiPaddle.height / 2);
+
+     // Ajustement progressif de la position du palet de l'IA
+     if (Math.abs(difference) > paddleSpeed) {
+         // Si la différence est importante, déplacer le palet de l'IA vers la position prévue de la balle
+         movePaddle(aiPaddle, aiPaddle.y + Math.sign(difference) * paddleSpeed);
+     } else {
+         // Sinon, déplacer le palet de l'IA directement à la position prévue de la balle pour éviter les tremblements
+         movePaddle(aiPaddle, pY - aiPaddle.height / 2);
+     }    
 }
 
 

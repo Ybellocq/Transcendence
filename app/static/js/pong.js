@@ -145,57 +145,54 @@ function chooseRandomDirection(ballX, ballY) {
 
 function update() {
     // Faire bouger la balle
-        ballX += ballSpeedX;
-        ballY += ballSpeedY;
+    // Prévoir le prochain mouvement de la balle
+    let nextX = ballX + ballSpeedX;
+    let nextY = ballY + ballSpeedY;
 
-    // Envoyer la balle dans l'autre sens si elle touche le haut ou le bas
-    if ((ballY + ballRadius >= canvas.height || ballY - ballRadius <= 0)) {
-        ballSpeedY = -ballSpeedY * getRandomNumber(0.8, 1.2);
-        ballY += ballSpeedY;
-    }
-
-    // Envoyer la balle de l'autre côté si elle touche un joueur
-    else if (ballX - ballRadius < paddleWidth &&
-        ballY + ballRadius > player1Y &&
-        ballY - ballRadius < player1Y + paddleHeight && ballSpeedX) {
-        ballSpeedX = -ballSpeedX * getRandomNumber(0.8, 1.2); //0,8, 1,2
-        ballX += ballSpeedX;
-    }
-
-    else if (ballX + ballRadius > canvas.width - paddleWidth &&
-        ballY + ballRadius > player2Y &&
-        ballY - ballRadius < player2Y + paddleHeight && ballSpeedX) {
+    // Vérifier la collision avec le palet du joueur
+    if (nextX - ballRadius < paddleWidth &&
+        nextY + ballRadius > player1Y &&
+        nextY - ballRadius < player1Y + paddleHeight &&
+        nextX - ballRadius >= 0) { // Assurer que la balle ne pénètre pas dans le palet
         ballSpeedX = -ballSpeedX * getRandomNumber(0.8, 1.2);
-        ballX += ballSpeedX;
+        ballSpeedY = ballSpeedY * getRandomNumber(0.8, 1.2);
+        adjustAiTarget();
     }
 
-    // Si la balle est sortie du jeu, remettre la balle au centre
-    if (ballX - ballRadius < 0) {
-        player2Score++;
-        resetBall();
-        resetPaddles();
-    } else if (ballX + ballRadius > canvas.width) {
-        player1Score++;
-        resetBall();
-        resetPaddles();
+    // Vérifier la collision avec le palet de l'IA
+    if (nextX + ballRadius > canvas.width - paddleWidth &&
+        nextY + ballRadius > player2Y &&
+        nextY - ballRadius < player2Y + paddleHeight &&
+        nextX + ballRadius <= canvas.width) { // Assurer que la balle ne pénètre pas dans le palet
+        ballSpeedX = -ballSpeedX * getRandomNumber(0.8, 1.2);
+        ballSpeedY = ballSpeedY * getRandomNumber(0.8, 1.2);
+        adjustAiTarget();
     }
 
-    // Augmenter la vitesse de la balle progressivement sur une même manche
-    if (Math.abs(ballSpeedX) < maxBallSpeed) {
-        ballSpeedX += ballSpeedX > 0 ? 0.001 : -0.001;
-    }
-    else
-    {
-        ballSpeedX = maxBallSpeed;
+    // Vérifier la collision avec les bords du canvas
+    if (nextY + ballRadius >= canvas.height || nextY - ballRadius <= 0) {
+        ballSpeedY = -ballSpeedY * getRandomNumber(0.8, 1.2);
     }
 
-    if (Math.abs(ballSpeedY) < maxBallSpeed) {
-        ballSpeedY += ballSpeedY > 0 ? 0.001 : -0.001;
+    if ((nextX + ballRadius >= canvas.width && ballSpeedX > 0) || (nextX - ballRadius <= 0 && ballSpeedX < 0)) {
+        // Vérifier si la balle a franchi la ligne de but
+        if (nextX + ballRadius >= canvas.width) {
+            player1Score++;
+            resetBall();
+            resetPaddles();
+            return;
+        } else if (nextX - ballRadius <= 0) {
+            computerScore++;
+            resetBall();
+            resetPaddles();
+            return;
+        }
+        ballSpeedX = -ballSpeedX * getRandomNumber(0.8, 1.2);
     }
-    else
-    {
-        ballSpeedY = maxBallSpeed;
-    }
+
+    // Déplacer la balle
+    ballX += ballSpeedX;
+    ballY += ballSpeedY;
 }
 
 //Replacer la balle au centre
